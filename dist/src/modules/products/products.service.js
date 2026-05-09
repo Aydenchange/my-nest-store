@@ -11,11 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductsService = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("./prisma.service");
+const prisma_service_1 = require("../prisma.service");
+const tenant_service_1 = require("../tenant/tenant.service");
 let ProductsService = class ProductsService {
     prisma;
-    constructor(prisma) {
+    tenantService;
+    constructor(prisma, tenantService) {
         this.prisma = prisma;
+        this.tenantService = tenantService;
     }
     findAll() {
         return this.prisma.product.findMany();
@@ -24,7 +27,7 @@ let ProductsService = class ProductsService {
         return this.prisma.product.create({
             data: {
                 ...dto,
-                tenantId: 'default-tenant',
+                tenantId: this.tenantService.getTenantId(),
             },
         });
     }
@@ -32,6 +35,7 @@ let ProductsService = class ProductsService {
 exports.ProductsService = ProductsService;
 exports.ProductsService = ProductsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        tenant_service_1.TenantService])
 ], ProductsService);
 //# sourceMappingURL=products.service.js.map

@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { TenantService } from './tenant/tenant.service';
+import { PrismaService } from '../prisma.service';
+import { CreateProductDto } from '../../dto/create-product.dto';
+import { TenantService } from '../tenant/tenant.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
-    private prisma: PrismaService, // 注入数据库服务
-    private tenantService: TenantService, // 注入租户上下文
+    private readonly prisma: PrismaService, // 注入数据库服务
+    private readonly tenantService: TenantService, // 注入租户上下文
   ) {}
 
   findAll() {

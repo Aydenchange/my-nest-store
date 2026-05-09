@@ -6,21 +6,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppModule = void 0;
+exports.TenantService = void 0;
 const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
-const products_module_1 = require("./modules/products/products.module");
-const tenant_module_1 = require("./modules/tenant/tenant.module");
-let AppModule = class AppModule {
+let TenantService = class TenantService {
+    tenantId;
+    setTenantId(id) {
+        this.tenantId = id;
+    }
+    getTenantId() {
+        return this.tenantId;
+    }
 };
-exports.AppModule = AppModule;
-exports.AppModule = AppModule = __decorate([
-    (0, common_1.Module)({
-        imports: [
-            config_1.ConfigModule.forRoot({ isGlobal: true }),
-            tenant_module_1.TenantModule,
-            products_module_1.ProductsModule,
-        ],
-    })
-], AppModule);
-//# sourceMappingURL=app.module.js.map
+exports.TenantService = TenantService;
+exports.TenantService = TenantService = __decorate([
+    (0, common_1.Injectable)({ scope: common_1.Scope.REQUEST })
+], TenantService);
+//# sourceMappingURL=tenant.service.js.map

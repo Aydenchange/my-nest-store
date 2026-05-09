@@ -14,8 +14,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductsController = void 0;
 const common_1 = require("@nestjs/common");
+const auth_guard_1 = require("../auth/auth.guard");
 const products_service_1 = require("./products.service");
-const create_product_dto_1 = require("./dto/create-product.dto");
+const create_product_dto_1 = require("../../dto/create-product.dto");
+const roles_decorator_1 = require("../auth/roles.decorator");
 let ProductsController = class ProductsController {
     productsService;
     constructor(productsService) {
@@ -37,6 +39,7 @@ __decorate([
 ], ProductsController.prototype, "getAllProducts", null);
 __decorate([
     (0, common_1.Post)(),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_product_dto_1.CreateProductDto]),
@@ -44,6 +47,7 @@ __decorate([
 ], ProductsController.prototype, "create", null);
 exports.ProductsController = ProductsController = __decorate([
     (0, common_1.Controller)('products'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __metadata("design:paramtypes", [products_service_1.ProductsService])
 ], ProductsController);
 //# sourceMappingURL=products.controller.js.map

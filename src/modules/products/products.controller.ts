@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Query } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from '../../dto/create-product.dto';
 import { Roles } from '../auth/roles.decorator';
+import { GetProductsQueryDto } from '../../dto/get-products-query.dto';
 
 @Controller('products') // 路由前缀是 /products
 @UseGuards(AuthGuard) // 整个控制器的接口都需要登录
@@ -11,8 +12,8 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  getAllProducts() {
-    return this.productsService.findAll();
+  async getAllProducts(@Query() query: GetProductsQueryDto) {
+    return this.productsService.findAll(query);
   }
 
   @Post()

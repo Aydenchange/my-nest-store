@@ -20,8 +20,36 @@ let ProductsService = class ProductsService {
         this.prisma = prisma;
         this.tenantService = tenantService;
     }
-    findAll() {
-        return this.prisma.product.findMany();
+    async findAll(query) {
+        const page = query.page ?? 1;
+        const limit = query.limit ?? 10;
+        const { search } = query;
+        const skip = (page - 1) * limit;
+        const [items, total] = await Promise.all([
+            this.prisma.product.findMany({
+                where: {
+                    tenantId: this.tenantService.getTenantId(),
+                    name: search ? { contains: search } : undefined,
+                },
+                skip,
+                take: limit,
+                orderBy: { createdAt: 'desc' },
+            }),
+            this.prisma.product.count({
+                where: {
+                    tenantId: this.tenantService.getTenantId(),
+                    name: search ? { contains: search } : undefined,
+                },
+            }),
+        ]);
+        return {
+            items,
+            meta: {
+                total,
+                page,
+                lastPage: Math.ceil(total / limit),
+            },
+        };
     }
     create(dto) {
         return this.prisma.product.create({

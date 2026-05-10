@@ -18,13 +18,14 @@ const auth_guard_1 = require("../auth/auth.guard");
 const products_service_1 = require("./products.service");
 const create_product_dto_1 = require("../../dto/create-product.dto");
 const roles_decorator_1 = require("../auth/roles.decorator");
+const get_products_query_dto_1 = require("../../dto/get-products-query.dto");
 let ProductsController = class ProductsController {
     productsService;
     constructor(productsService) {
         this.productsService = productsService;
     }
-    getAllProducts() {
-        return this.productsService.findAll();
+    async getAllProducts(query) {
+        return this.productsService.findAll(query);
     }
     create(createProductDto) {
         return this.productsService.create(createProductDto);
@@ -33,9 +34,10 @@ let ProductsController = class ProductsController {
 exports.ProductsController = ProductsController;
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [get_products_query_dto_1.GetProductsQueryDto]),
+    __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "getAllProducts", null);
 __decorate([
     (0, common_1.Post)(),

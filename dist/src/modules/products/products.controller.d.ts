@@ -18,11 +18,19 @@ export declare class ProductsController {
             lastPage: number;
         };
     }>;
-    create(createProductDto: CreateProductDto): import("../../generated/prisma").Prisma.Prisma__ProductClient<{
+    create(createProductDto: CreateProductDto): import("@prisma/client").Prisma.Prisma__ProductClient<{
         name: string;
         price: number;
         id: number;
         tenantId: string;
         createdAt: Date;
-    }, never, import("../../generated/prisma/runtime/client").DefaultArgs, import("../../generated/prisma").Prisma.PrismaClientOptions>;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import("@prisma/client").Prisma.PrismaClientOptions>;
+    getProductById(id: number): Promise<any>;
+    updateProduct(id: number, dto: CreateProductDto): Promise<{
+        name: string;
+        price: number;
+        id: number;
+        tenantId: string;
+        createdAt: Date;
+    }>;
 }

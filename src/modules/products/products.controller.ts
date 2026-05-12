@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, UseGuards, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from '../../dto/create-product.dto';
@@ -21,5 +31,19 @@ export class ProductsController {
   // @Body() 装饰器会自动解析 Request Body 并映射到 DTO
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
+  }
+
+  @Get(':id')
+  getProductById(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.findOne(id);
+  }
+
+  @Patch(':id')
+  @Roles('admin')
+  updateProduct(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: CreateProductDto,
+  ) {
+    return this.productsService.update(id, dto);
   }
 }

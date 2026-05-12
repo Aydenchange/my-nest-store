@@ -30,6 +30,12 @@ let ProductsController = class ProductsController {
     create(createProductDto) {
         return this.productsService.create(createProductDto);
     }
+    getProductById(id) {
+        return this.productsService.findOne(id);
+    }
+    updateProduct(id, dto) {
+        return this.productsService.update(id, dto);
+    }
 };
 exports.ProductsController = ProductsController;
 __decorate([
@@ -47,6 +53,22 @@ __decorate([
     __metadata("design:paramtypes", [create_product_dto_1.CreateProductDto]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], ProductsController.prototype, "getProductById", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    (0, roles_decorator_1.Roles)('admin'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, create_product_dto_1.CreateProductDto]),
+    __metadata("design:returntype", void 0)
+], ProductsController.prototype, "updateProduct", null);
 exports.ProductsController = ProductsController = __decorate([
     (0, common_1.Controller)('products'),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),

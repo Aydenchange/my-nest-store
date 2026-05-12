@@ -11,6 +11,8 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const products_module_1 = require("./modules/products/products.module");
 const tenant_module_1 = require("./modules/tenant/tenant.module");
+const upload_module_1 = require("./modules/upload/upload.module");
+const ioredis_1 = require("@nestjs-modules/ioredis");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -18,8 +20,13 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot({ isGlobal: true }),
+            ioredis_1.RedisModule.forRoot({
+                type: 'single',
+                url: `redis://${process.env.REDIS_HOST}:6379`,
+            }),
             tenant_module_1.TenantModule,
             products_module_1.ProductsModule,
+            upload_module_1.UploadModule,
         ],
     })
 ], AppModule);

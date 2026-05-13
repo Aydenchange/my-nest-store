@@ -1,4 +1,4 @@
-import { PrismaService } from '../prisma.service';
+import { PrismaClient } from '@prisma/client';
 import { CreateProductDto } from '../../dto/create-product.dto';
 import { TenantService } from '../tenant/tenant.service';
 import { GetProductsQueryDto } from '../../dto/get-products-query.dto';
@@ -7,7 +7,7 @@ export declare class ProductsService {
     private readonly prisma;
     private readonly tenantService;
     private readonly redis;
-    constructor(prisma: PrismaService, tenantService: TenantService, redis: Redis);
+    constructor(prisma: PrismaClient, tenantService: TenantService, redis: Redis);
     findAll(query: GetProductsQueryDto): Promise<{
         items: {
             name: string;

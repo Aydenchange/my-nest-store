@@ -28,7 +28,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/platform-express": "^11.0.1",
-    "@prisma/adapter-better-sqlite3": "^7.8.0",
+    "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "ali-oss": "^6.23.0",
     "bullmq": "^5.76.6",
@@ -37,6 +37,7 @@
     "ioredis": "^5.10.1",
     "mq": "^0.0.0",
     "passport-jwt": "^4.0.1",
+    "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },

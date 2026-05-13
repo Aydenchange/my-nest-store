@@ -14,7 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductsService = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("../prisma.service");
+const client_1 = require("@prisma/client");
 const tenant_service_1 = require("../tenant/tenant.service");
 const ioredis_1 = require("ioredis");
 const ioredis_2 = require("@nestjs-modules/ioredis");
@@ -94,8 +94,9 @@ let ProductsService = class ProductsService {
 exports.ProductsService = ProductsService;
 exports.ProductsService = ProductsService = __decorate([
     (0, common_1.Injectable)(),
+    __param(0, (0, common_1.Inject)('PRISMA_CLIENT')),
     __param(2, (0, ioredis_2.InjectRedis)()),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+    __metadata("design:paramtypes", [client_1.PrismaClient,
         tenant_service_1.TenantService,
         ioredis_1.Redis])
 ], ProductsService);

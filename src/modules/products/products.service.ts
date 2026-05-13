@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 import { CreateProductDto } from '../../dto/create-product.dto';
 import { TenantService } from '../tenant/tenant.service';
@@ -9,7 +10,8 @@ import { InjectRedis } from '@nestjs-modules/ioredis';
 @Injectable()
 export class ProductsService {
   constructor(
-    private readonly prisma: PrismaService, // 注入数据库服务
+    // 注意：这里不再注入具体的 PrismaService，而是注入我们定义的字符串 Token
+    @Inject('PRISMA_CLIENT') private readonly prisma: PrismaClient,
     private readonly tenantService: TenantService, // 注入租户上下文
     @InjectRedis() private readonly redis: Redis, // 注入 Redis 实例
   ) {}

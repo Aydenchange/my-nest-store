@@ -1,39 +1,62 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { afterEach, beforeEach, describe, it, jest } from '@jest/globals';
+import {
+  INestMicroservice,
+  MicroserviceOptions,
+  Transport,
+} from '@nestjs/microservices';
+import { afterAll, beforeAll, describe, it } from '@jest/globals';
 import request from 'supertest';
 import { App } from 'supertest/types';
-import { AppModule } from '../src/app.module';
-import { PrismaService } from '../src/modules/prisma.service';
+import { OrdersModule } from '../src/modules/orders/orders.module';
+import { InventoryModule } from '../src/modules/inventory/inventory.module';
 
-describe('Products (e2e)', () => {
+describe('Orders + Inventory Microservice (e2e)', () => {
   let app: INestApplication<App>;
+  let inventoryMicroservice: INestMicroservice;
 
-  const prismaMock = {
-    product: {
-      findMany: jest.fn(),
-      create: jest.fn(),
-      count: jest.fn(),
-    },
-  };
+  beforeAll(async () => {
+    const inventoryModule: TestingModule = await Test.createTestingModule({
+      imports: [InventoryModule],
+    }).compile();
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    })
-      .overrideProvider(PrismaService)
-      .useValue(prismaMock)
-      .compile();
+    inventoryMicroservice =
+      inventoryModule.createNestMicroservice<MicroserviceOptions>({
+        transport: Transport.TCP,
+        options: {
+          host: '127.0.0.1',
+          port: 3001,
+        },
+      });
 
-    app = moduleFixture.createNestApplication();
+    await inventoryMicroservice.listen();
+
+    const ordersModule: TestingModule = await Test.createTestingModule({
+      imports: [OrdersModule],
+    }).compile();
+
+    app = ordersModule.createNestApplication();
     await app.init();
   });
 
-  it('/products (GET) should require auth', () => {
-    return request(app.getHttpServer()).get('/products').expect(401);
+  it('/orders/create should place order when stock is enough', async () => {
+    await request(app.getHttpServer())
+      .post('/orders/create')
+      .send({ productId: 1, quantity: 2 })
+      .expect(201)
+      .expect({ code: 200, message: '下单成功，库存已扣减' });
   });
 
-  afterEach(async () => {
+  it('/orders/create should reject order when stock is insufficient', async () => {
+    await request(app.getHttpServer())
+      .post('/orders/create')
+      .send({ productId: 1, quantity: 101 })
+      .expect(201)
+      .expect({ code: 400, message: '下单失败', detail: '库存不足' });
+  });
+
+  afterAll(async () => {
     await app.close();
+    await inventoryMicroservice.close();
   });
 });

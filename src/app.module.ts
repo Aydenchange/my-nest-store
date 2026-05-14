@@ -4,6 +4,8 @@ import { ProductsModule } from './modules/products/products.module';
 import { TenantModule } from './modules/tenant/tenant.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { RedisModule } from '@nestjs-modules/ioredis';
+import { OrdersModule } from './modules/orders/orders.module';
+import { InventoryModule } from './modules/inventory/inventory.module';
 
 @Module({
   imports: [
@@ -16,6 +18,7 @@ import { RedisModule } from '@nestjs-modules/ioredis';
     // 2. 加载各个业务集装箱
     TenantModule,
     ProductsModule,
+    OrdersModule,
     UploadModule,
   ],
 })

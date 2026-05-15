@@ -11,6 +11,11 @@ import { OrdersController } from './orders.controller';
         transport: Transport.TCP,
         options: { host: '127.0.0.1', port: 3001 },
       },
+      {
+        name: 'MESSAGE_BROKER',
+        transport: Transport.REDIS,
+        options: { host: 'localhost', port: 6379 },
+      },
     ]),
   ],
   controllers: [OrdersController],

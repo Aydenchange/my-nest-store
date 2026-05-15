@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 export class OrdersController {
   constructor(
     @Inject('INVENTORY_SERVICE') private client: ClientProxy, // 注入信使
+    @Inject('MESSAGE_BROKER') private messageBroker: ClientProxy, // 注入消息代理
   ) {}
 
   @Post('create')
@@ -26,5 +27,19 @@ export class OrdersController {
     }
 
     return { code: 200, message: '下单成功，库存已扣减' };
+  }
+
+  @Post('pay')
+  async payOrder(@Body() dto: { orderId: string }) {
+    console.log(`[网关] 订单 ${dto.orderId} 支付成功！`);
+
+    // 使用 emit 而不是 send。emit 用于发送“事件”，不等待返回。
+    this.messageBroker.emit('order_paid', {
+      orderId: dto.orderId,
+      amount: 99.9,
+      email: 'user@example.com',
+    });
+
+    return { status: 'success', message: '支付处理中，您可以关闭页面了' };
   }
 }

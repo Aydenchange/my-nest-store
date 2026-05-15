@@ -5,7 +5,7 @@ import { TenantModule } from './modules/tenant/tenant.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { OrdersModule } from './modules/orders/orders.module';
-import { InventoryModule } from './modules/inventory/inventory.module';
+import { ConsumerModule } from './modules/consumer/consumer.module';
 
 @Module({
   imports: [
@@ -13,13 +13,14 @@ import { InventoryModule } from './modules/inventory/inventory.module';
     ConfigModule.forRoot({ isGlobal: true }),
     RedisModule.forRoot({
       type: 'single',
-      url: `redis://${process.env.REDIS_HOST}:6379`,
+      url: `redis://${process.env.REDIS_HOST ?? 'localhost'}:6379`,
     }),
     // 2. 加载各个业务集装箱
     TenantModule,
     ProductsModule,
     OrdersModule,
     UploadModule,
+    ConsumerModule,
   ],
 })
 export class AppModule {}

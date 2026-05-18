@@ -2,6 +2,11 @@ import { Controller, Post, Body, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
+type DeductInventoryResult = {
+  success: boolean;
+  message: string;
+};
+
 @Controller('orders')
 export class OrdersController {
   constructor(
@@ -14,8 +19,8 @@ export class OrdersController {
     console.log(`[API网关] 收到前端创单请求，正在联系库存微服务...`);
 
     // 使用 client.send 发送消息，并通过 firstValueFrom 把 Observable 转为 Promise
-    const inventoryResult = await firstValueFrom(
-      this.client.send('deduct_inventory', dto),
+    const inventoryResult = await firstValueFrom<DeductInventoryResult>(
+      this.client.send<DeductInventoryResult>('deduct_inventory', dto),
     );
 
     if (!inventoryResult.success) {
@@ -30,7 +35,7 @@ export class OrdersController {
   }
 
   @Post('pay')
-  async payOrder(@Body() dto: { orderId: string }) {
+  payOrder(@Body() dto: { orderId: string }) {
     console.log(`[网关] 订单 ${dto.orderId} 支付成功！`);
 
     // 使用 emit 而不是 send。emit 用于发送“事件”，不等待返回。

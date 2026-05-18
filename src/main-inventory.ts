@@ -17,4 +17,4 @@ async function bootstrap() {
   await app.listen();
   console.log('📦 库存微服务已启动 (TCP Port: 3001)');
 }
-bootstrap();
+void bootstrap();

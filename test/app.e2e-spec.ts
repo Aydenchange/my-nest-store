@@ -6,28 +6,35 @@ import {
   Transport,
 } from '@nestjs/microservices';
 import { afterAll, beforeAll, describe, it } from '@jest/globals';
+import { Server } from 'http';
 import request from 'supertest';
-import { App } from 'supertest/types';
 import { OrdersModule } from '../src/modules/orders/orders.module';
 import { InventoryModule } from '../src/modules/inventory/inventory.module';
 
+type TestMicroservice = {
+  listen: () => Promise<void>;
+  close: () => Promise<void>;
+};
+
 describe('Orders + Inventory Microservice (e2e)', () => {
-  let app: INestApplication<App>;
-  let inventoryMicroservice: INestMicroservice;
+  let app: INestApplication<Server>;
+  let inventoryMicroservice: TestMicroservice;
 
   beforeAll(async () => {
     const inventoryModule: TestingModule = await Test.createTestingModule({
       imports: [InventoryModule],
     }).compile();
 
-    inventoryMicroservice =
-      inventoryModule.createNestMicroservice<MicroserviceOptions>({
-        transport: Transport.TCP,
-        options: {
-          host: '127.0.0.1',
-          port: 3001,
-        },
-      });
+    inventoryMicroservice = inventoryModule.createNestMicroservice<
+      MicroserviceOptions,
+      INestMicroservice
+    >({
+      transport: Transport.TCP,
+      options: {
+        host: '127.0.0.1',
+        port: 3001,
+      },
+    });
 
     await inventoryMicroservice.listen();
 
@@ -40,7 +47,8 @@ describe('Orders + Inventory Microservice (e2e)', () => {
   });
 
   it('/orders/create should place order when stock is enough', async () => {
-    await request(app.getHttpServer())
+    const server = app.getHttpServer();
+    await request(server)
       .post('/orders/create')
       .send({ productId: 1, quantity: 2 })
       .expect(201)
@@ -48,7 +56,8 @@ describe('Orders + Inventory Microservice (e2e)', () => {
   });
 
   it('/orders/create should reject order when stock is insufficient', async () => {
-    await request(app.getHttpServer())
+    const server = app.getHttpServer();
+    await request(server)
       .post('/orders/create')
       .send({ productId: 1, quantity: 101 })
       .expect(201)

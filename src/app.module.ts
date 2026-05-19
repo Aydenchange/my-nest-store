@@ -6,6 +6,7 @@ import { UploadModule } from './modules/upload/upload.module';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ConsumerModule } from './modules/consumer/consumer.module';
+import { MetricsModule } from './modules/metrics/metrics.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ConsumerModule } from './modules/consumer/consumer.module';
     OrdersModule,
     UploadModule,
     ConsumerModule,
+    MetricsModule,
   ],
 })
 export class AppModule {}

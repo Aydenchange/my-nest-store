@@ -4,9 +4,14 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { winstonLoggerOptions } from './common/logger/winston.config';
+import { WinstonModule } from 'nest-winston/dist/winston.module';
+import { MonitoringInterceptor } from './common/interceptors/monitoring.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger(winstonLoggerOptions),
+  });
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.REDIS,
@@ -27,6 +32,7 @@ async function bootstrap() {
 
   // 注册全局拦截器和过滤器
   app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalInterceptors(new MonitoringInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.startAllMicroservices();
